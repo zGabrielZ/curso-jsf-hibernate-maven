@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de lançamentos</title>
+</h:head>
+<h:body>
+
+	<ui:composition template="/layout/Cadastro.xhtml">
+		<ui:define name="conteudo">
+			<div id="pessoa" align="center">
+				<h:form id="frmLancamentos">
+					<b:messages id="msg" />
+
+					<b:inputText id="codigo" value="#{lancamentoManager.lancamento.id}"
+						label="Código" type="hidden"></b:inputText>
+
+					<h:panelGrid columns="1" style="margin-top:20px;">
+						<f:facet name="header">
+							<h:outputLabel value="Cadastro de lançamentos"></h:outputLabel>
+						</f:facet>
+
+						<b:column>
+							<b:inputText
+								value="#{lancamentoManager.lancamento.numeroNotaFiscal}"
+								id="nota" label="Nota" placeholder="Informe a nota" />
+						</b:column>
+
+						<b:column>
+							<b:inputText
+								value="#{lancamentoManager.lancamento.empresaOrigem}"
+								id="empresaOrigem" label="Empresa Origem"
+								placeholder="Informe a Empresa Origem" />
+						</b:column>
+
+						<b:column>
+							<b:inputText
+								value="#{lancamentoManager.lancamento.empresaDestino}"
+								id="empresaDestino" label="Empresa Destino"
+								placeholder="Informe a Empresa Destino" />
+						</b:column>
+						
+						<b:column>
+							<b:datepicker label="Data Inicial" locale="pt" value="#{lancamentoManager.lancamento.dataInicial}"
+							required="true" requiredMessage="Data inicial é necessário"  />
+						</b:column>
+						
+						<b:column>
+							<b:datepicker label="Data Final" value="#{lancamentoManager.lancamento.dataFinal}"
+							locale="pt" required="true" requiredMessage="Data final é necessário"  />
+						</b:column>
+
+						<b:column style="margin-top:10px;">
+							<h:commandLink ajax="false" update="@all" title="Novo"
+								style="width:100%;" actionListener="#{lancamentoManager.novo}">
+								<o:skipValidators />
+								<h:graphicImage width="50"
+									value="/resources/imagem/img-novo.png"></h:graphicImage>
+							</h:commandLink>
+
+							<h:commandLink ajax="false" update="@all" title="Cadastrar"
+								style="width:100%;margin-left:10px;"
+								actionListener="#{lancamentoManager.cadastro}">
+								<h:graphicImage width="50"
+									value="/resources/imagem/img-cadastro.png"></h:graphicImage>
+							</h:commandLink>
+
+						</b:column>
+
+					</h:panelGrid>
+
+				</h:form>
+			</div>
+
+			<div id="consultaLancamento">
+
+				<p align="center" style="margin-top:70px;font-size: 20px;font-family: sans-serif;" >Consulta de lançamentos (10 recentes)</p>
+
+				<h:form id="frmDataTableLancamento">
+
+					<b:dataTable id="dataTableLancamentos"
+						value="#{lancamentoManager.lancamentos}" var="lancamento"
+						style="margin-top:20px;">
+
+						<b:dataTableColumn value="#{lancamento.id}" label="ID" />
+						<b:dataTableColumn value="#{lancamento.numeroNotaFiscal}"
+							label="Nota" />
+						<b:dataTableColumn value="#{lancamento.empresaOrigem}"
+							label="Empresa Origem" />
+						<b:dataTableColumn value="#{lancamento.empresaDestino}"
+							label="Empresa Destino" />
+						<b:column>
+							<f:facet name="header">Data Inicial</f:facet>
+							<h:outputText value="#{lancamento.dataInicial}" converter="dataNascimentoConverter" ></h:outputText>
+						</b:column>
+						<b:column>
+							<f:facet name="header">Data Final</f:facet>
+							<h:outputText value="#{lancamento.dataFinal}" converter="dataNascimentoConverter" ></h:outputText>
+						</b:column>
+						<b:dataTableColumn label="Editar">
+							<h:commandLink ajax="false" title="Atualizar"
+								style="margin-left:20px;" update="@all">
+								<h:graphicImage width="50"
+									value="/resources/imagem/imagem-update.png"></h:graphicImage>
+								<f:setPropertyActionListener value="#{lancamento}"
+									target="#{lancamentoManager.lancamento}" />
+							</h:commandLink>
+						</b:dataTableColumn>
+						<b:dataTableColumn label="Deletar">
+							<h:commandLink ajax="false" title="Deletar"
+								rendered="#{loginManager.pessoa.perfil.id eq 1}"
+								action="#{lancamentoManager.deletar}" style="margin-left:20px;"
+								update="@form">
+								<h:graphicImage width="50"
+									value="/resources/imagem/imagem-deletar.png"></h:graphicImage>
+								<f:setPropertyActionListener value="#{lancamento}"
+									target="#{lancamentoManager.lancamentoSelecionado}" />
+							</h:commandLink>
+						</b:dataTableColumn>
+					</b:dataTable>
+				</h:form>
+			</div>
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

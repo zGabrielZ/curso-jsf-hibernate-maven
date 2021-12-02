@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relatório de lançamentos</title>
+</h:head>
+<h:body>
+
+	<ui:composition template="/layout/Cadastro.xhtml">
+		<ui:define name="conteudo">
+			<h:form id="frmLancamentos">
+				<div id="relatorioLancamento" align="center">
+					<b:messages id="msg" />
+					<h:panelGrid columns="1" style="margin-top:20px;">
+						<f:facet name="header">
+							<h:outputLabel value="Relatório de lançamentos"></h:outputLabel>
+						</f:facet>
+						
+						<b:column>
+							<b:inputText
+								value="#{relatorioLancamentoManager.numeroNotaFiscal}"
+								id="nota" label="Nota" />
+						</b:column>
+						
+						<b:column>
+							<b:datepicker label="Data Inicial" value="#{relatorioLancamentoManager.dataInicial}" 
+								locale="pt" />
+						</b:column>
+						
+						<b:column>
+							<b:datepicker label="Data Final" value="#{relatorioLancamentoManager.dataFinal}"
+								locale="pt"  />
+						</b:column>
+
+						<b:column>
+							<b:commandButton style="width:100%" update="@form" value="Consultar lançamentos"
+								actionListener="#{relatorioLancamentoManager.consultarLancamento}" look="primary" >
+							</b:commandButton>
+						</b:column>
+						
+						<b:column style="margin-top:10px;">
+							<b:commandButton style="width:100%" value="Gerar relatório"
+								actionListener="#{relatorioLancamentoManager.gerarRelatorioLancamento}" 
+								look="success" rendered="#{relatorioLancamentoManager.lancamentos.size() > 0}" >
+							</b:commandButton>
+						</b:column>
+
+					</h:panelGrid>
+				</div>
+
+				<div id="tblLancamento">
+					<b:dataTable id="dataTableLancamentos"
+						value="#{relatorioLancamentoManager.lancamentos}" var="lancamento"
+						style="margin-top:20px;" rendered="#{not empty relatorioLancamentoManager.lancamentos}">
+
+						<b:dataTableColumn value="#{lancamento.id}" label="ID" />
+						<b:dataTableColumn value="#{lancamento.numeroNotaFiscal}"
+							label="Nota" />
+						<b:dataTableColumn value="#{lancamento.empresaOrigem}"
+							label="Empresa Origem" />
+						<b:dataTableColumn value="#{lancamento.empresaDestino}"
+							label="Empresa Destino" />
+						<b:column>
+							<f:facet name="header">Data Inicial</f:facet>
+							<h:outputText value="#{lancamento.dataInicial}"
+								converter="dataNascimentoConverter"></h:outputText>
+						</b:column>
+						<b:column>
+							<f:facet name="header">Data Final</f:facet>
+							<h:outputText value="#{lancamento.dataFinal}"
+								converter="dataNascimentoConverter"></h:outputText>
+						</b:column>
+					</b:dataTable>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

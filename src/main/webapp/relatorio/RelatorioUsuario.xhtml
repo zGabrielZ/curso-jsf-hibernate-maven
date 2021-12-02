@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relatório de usuários</title>
+</h:head>
+<h:body>
+
+	<ui:composition template="/layout/Cadastro.xhtml">
+		<ui:define name="conteudo">
+			<h:form id="frmPessoa">
+				<div id="relatorioUsuario" align="center">
+					<b:messages id="msg" />
+					<h:panelGrid columns="1" style="margin-top:20px;">
+						<f:facet name="header">
+							<h:outputLabel value="Relatório de usuários"></h:outputLabel>
+						</f:facet>
+						
+						<b:column>
+							<b:inputText
+								value="#{relatorioUsuarioManager.nome}"
+								id="nota" label="Nome" />
+						</b:column>
+						
+						<b:column>
+							<b:datepicker label="Data Nascimento início" value="#{relatorioUsuarioManager.dataInicioNascimento}" 
+								locale="pt" />
+						</b:column>
+						
+						<b:column>
+							<b:datepicker label="Data Nascimento final" value="#{relatorioUsuarioManager.dataFimNascimento}"
+								locale="pt"  />
+						</b:column>
+
+						<b:column>
+							<b:commandButton style="width:100%" update="@form" value="Consultar usuários"
+								actionListener="#{relatorioUsuarioManager.consultarPessoa}" look="primary" >
+							</b:commandButton>
+						</b:column>
+						
+						<b:column style="margin-top:10px;">
+							<b:commandButton style="width:100%" value="Gerar relatório"
+								actionListener="#{relatorioUsuarioManager.gerarRelatorioPessoa}" 
+								look="success" rendered="#{relatorioUsuarioManager.pessoas.size() > 0}" >
+							</b:commandButton>
+						</b:column>
+
+					</h:panelGrid>
+				</div>
+
+				<div id="tblLancamento">
+					<b:dataTable id="dataTablePessoa"
+						value="#{relatorioUsuarioManager.pessoas}" var="pessoa"
+						style="margin-top:20px;" pdf="true" excel="true"
+						rendered="#{not empty relatorioUsuarioManager.pessoas}">
+
+						<b:dataTableColumn value="#{pessoa.id}" label="ID" />
+						<b:dataTableColumn value="#{pessoa.nome}"
+							label="Nome" />
+						<b:dataTableColumn value="#{pessoa.sobrenome}"
+							label="Sobrenome" />
+						<b:column>
+							<f:facet name="header">Sexo</f:facet>
+							<h:outputText value="#{pessoa.sexo eq 'MASCULINO' ? 'Masculino' : 'Feminino'}" ></h:outputText>
+						</b:column>
+						<b:column>
+							<f:facet name="header">Data de nascimento</f:facet>
+							<h:outputText value="#{pessoa.dataNascimento}"
+								converter="dataNascimentoConverter"></h:outputText>
+						</b:column>
+					</b:dataTable>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

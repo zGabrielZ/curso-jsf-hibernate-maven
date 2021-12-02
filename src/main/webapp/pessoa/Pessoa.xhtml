@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:b="http://bootsfaces.net/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de pessoas</title>
+</h:head>
+<h:body>
+
+	<ui:composition template="/layout/Cadastro.xhtml">
+		<ui:define name="titulo">
+			<h1 align="center">Bem vindo,
+				#{loginManager.pessoa.nomeCompleto}</h1>
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<div id="pessoa" align="center">
+
+				<b:form id="btnConsultaPessoa"
+					rendered="#{loginManager.pessoa.perfil.id eq 1}">
+					<b:commandLink ajax="false" title="Consultar Pessoas"
+						action="#{navegacaoManager.consultarPessoa}"
+						style="margin-bottom:10px;">
+						<h:graphicImage width="50"
+							value="/resources/imagem/img-consultar.png"></h:graphicImage>
+					</b:commandLink>
+				</b:form>
+
+				<h:form id="frmPessoa" enctype="multipart/form-data" 
+					rendered="#{loginManager.pessoa.perfil.id eq 1}">
+					
+					<b:messages id="msg" />
+
+					<b:inputText id="codigo" value="#{pessoaManager.pessoa.id}"
+						label="Código" type="hidden"></b:inputText>
+
+					<h:panelGrid columns="1">
+						
+						<f:facet name="header">
+							<p:outputLabel value="Cadastro de pessoa"></p:outputLabel>
+						</f:facet>
+						
+						<b:column>
+							<b:inputText value="#{pessoaManager.pessoa.nome}" id="nome" 
+								label="Nome" placeholder="Informe nome do usuário" valueChangeListener="#{pessoaManager.mudancaNome}" >
+							</b:inputText>
+						</b:column>
+						
+						<b:column>
+							<h:outputLabel value="Imagem" for="imagem" />
+							<h:inputFile value="#{pessoaManager.arquivoFoto}" id="imagem" />
+						</b:column>
+						
+						<b:column rendered="#{pessoaManager.pessoa.id != null}" style="margin-top:10px;" >
+							<h:outputLabel value="Foto salva" for="foto" rendered="#{pessoaManager.pessoa.id != null}" />
+							<h:graphicImage width="80" height="80" id="foto" style="margin-left:10px;"
+						 		value="/PessoaImagem?idPessoa=#{pessoaManager.pessoa.id}" rendered="#{pessoaManager.pessoa.id != null}"  />
+						</b:column>
+
+						<b:column style="margin-top:10px;">
+							<b:inputText value="#{pessoaManager.pessoa.sobrenome}"
+							id="sobrenome" label="Sobrenome" placeholder="Informe sobrenome do usuário" 
+								valueChangeListener="#{pessoaManager.mudancaSobrenome}"	/>
+						</b:column>
+							
+						<b:column>
+							<b:inputText value="#{pessoaManager.pessoa.cpf}"
+								id="cpf" label="CPF" placeholder="Informe o cpf" mask="999.999.999-99" />
+						</b:column>
+							
+						<b:column>
+							<b:inputText value="#{pessoaManager.pessoa.tituloEleitoral}"
+							id="tituloEleitoral" label="Título Eleitoral" mask="numeric"  placeholder="Informe o título eleitoral" />
+						</b:column>
+
+						<b:column>
+							<b:datepicker id="nascimento"  label="Data de nascimento" value="#{pessoaManager.pessoa.dataNascimento}"
+							locale="pt" required="true" requiredMessage="Data de nascimento é necessário"  />
+						</b:column>
+						
+						<b:column>
+							<h:outputLabel value="Sexo" for="sexo" />
+							<b:selectOneMenu id="sexo" value="#{pessoaManager.pessoa.sexo}"  >
+								<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+								<f:selectItems value="#{pessoaManager.sexos}" var="sexo"
+									itemLabel="#{sexo.descricao}" itemValue="#{sexo}" />
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column>
+							<h:outputLabel value="Frameworks" for="frameworks" />
+							<p:selectManyMenu id="frameworks" value="#{pessoaManager.pessoa.frameworks}" style="height:120px;">
+								<f:selectItems value="#{pessoaManager.frameworksSelect}" />
+							</p:selectManyMenu>
+						</b:column>
+						
+						<b:column style="margin-top:10px;">
+							<b:inputText  id="cep" value="#{pessoaManager.pessoa.endereco.cep}"
+								label="Cep" required="true" mask="99999-999"
+								requiredMessage="Cep é obrigatório" placeholder="Informe CEP" >
+								<f:ajax event="blur" execute="@this" render="logradouro complemento bairro localidade uf ibge ddd siafi msg" listener="#{pessoaManager.consultarCep}"  />
+							</b:inputText>
+						</b:column>
+						
+						<b:column>
+							<b:inputText  id="complemento" value="#{pessoaManager.pessoa.endereco.complemento}"
+								label="Complemento" placeholder="Informe complemento" />
+						</b:column>
+						
+						<b:column>
+							<h:outputLabel value="Logradouro"  for="logradouro" />
+							<h:outputText style="margin-left:10px;"  id="logradouro" value="#{pessoaManager.pessoa.endereco.logradouro}"
+								label="Logradouro" />
+						</b:column>
+						
+						<b:column>
+							<h:outputLabel value="Bairro"  for="bairro" />
+							<h:outputText style="margin-left:10px;"  id="bairro" value="#{pessoaManager.pessoa.endereco.bairro}"
+								label="Bairro" />
+						</b:column>
+						
+						<b:column>
+							<h:outputLabel value="Localidade"  for="localidade" />
+							<h:outputText style="margin-left:10px;"  id="localidade" value="#{pessoaManager.pessoa.endereco.localidade}"
+								label="Localidade" />
+						</b:column>
+							
+						<b:column>
+							<h:outputLabel value="UF"  for="uf" />
+							<h:outputText style="margin-left:10px;"  id="uf" value="#{pessoaManager.pessoa.endereco.uf}"
+								label="UF" />
+						</b:column>
+							
+						<b:column>
+							<h:outputLabel value="IBGE"  for="ibge" />
+							<h:outputText style="margin-left:10px;"  id="ibge" value="#{pessoaManager.pessoa.endereco.ibge}"
+								label="IBGE" />
+						</b:column>
+							
+						<b:column>
+							<h:outputLabel value="DDD"  for="ddd" />
+							<h:outputText style="margin-left:10px;"  id="ddd" value="#{pessoaManager.pessoa.endereco.ddd}"
+								label="DDD" />
+						</b:column>
+							
+						<b:column>
+							<h:outputLabel value="Siafi"  for="siafi" />
+							<h:outputText style="margin-left:10px;" id="siafi" value="#{pessoaManager.pessoa.endereco.siafi}"
+								label="Siafi" />
+						</b:column>
+
+						<b:column style="margin-top:10px;" >
+							<h:panelGrid columns="2" >
+								<h:outputLabel value="Ativo" for="ativo" />
+								<b:selectBooleanCheckbox id="ativo" style="margin-left:5px;margin-top:5px;"
+									value="#{pessoaManager.pessoa.ativo}" />
+							</h:panelGrid>
+						</b:column>
+
+						<b:column>
+							<b:inputText value="#{pessoaManager.pessoa.login}" id="login"
+							label="Login" required="true"
+							requiredMessage="Login é obrigatório" placeholder="Informe login do usuário" />
+						</b:column>
+
+						<b:column>
+							<b:inputSecret value="#{pessoaManager.pessoa.senha}" id="senha"
+							label="Senha" required="true"
+							requiredMessage="Senha é obrigatório" placeholder="Informe a senha do usuário" />
+						</b:column>
+
+						<b:column>
+							<h:outputLabel value="Perfil" for="perfil" />
+							<b:selectOneMenu id="perfil" value="#{pessoaManager.pessoa.perfil}" required="true"
+								requiredMessage="Perfil é obrigatório" converter="#{perfilConverter}">
+								<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+								<f:selectItems value="#{pessoaManager.perfis}" />
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column>
+							<h:outputLabel value="Nível Programador:" for="nivel" />
+							<p:selectOneRadio id="nivel" value="#{pessoaManager.pessoa.nivelProgramador}" 
+								converter="#{nivelConverter}">
+								<f:selectItems value="#{pessoaManager.nivelProgramador}" />
+							</p:selectOneRadio>
+						</b:column>
+
+						<b:column style="margin-top:10px;" >
+							<h:outputLabel value="Linguagens" for="linguagem" />
+							<p:selectManyCheckbox id="linguagem" value="#{pessoaManager.pessoa.linguagens}" layout="pageDirection">
+								<f:selectItems value="#{pessoaManager.linguagemsSelect}" />
+							</p:selectManyCheckbox>
+						</b:column>
+						
+						<b:column style="margin-top:10px;" >
+							<h:outputLabel value="Estado" for="estado" />
+							<b:selectOneMenu id="estado" value="#{pessoaManager.pessoa.endereco.cidade.estado}" required="true"
+								converter="#{estadoConverter}"
+								requiredMessage="Estado é obrigatório">	
+								<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+								<f:selectItems value="#{pessoaManager.estados}" />
+								<f:ajax event="change" execute="@this" render="cidade msg" listener="#{pessoaManager.buscarCidadesPorEstado}"  />
+							</b:selectOneMenu>
+						</b:column>
+						
+						<b:column>
+							<h:outputLabel value="Cidade" for="cidade" />
+							<b:selectOneMenu id="cidade" value="#{pessoaManager.pessoa.endereco.cidade}" required="true"
+								converter="#{cidadeConverter}"
+								requiredMessage="Cidade é obrigatório">
+								<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+								<f:selectItems value="#{pessoaManager.cidadesPorEstados}" />
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column>
+							<h:commandLink id="btnLimpar"  title="Novo"
+								actionListener="#{pessoaManager.novo}" immediate="true"  >
+								<h:graphicImage width="50" value="/resources/imagem/img-novo.png"></h:graphicImage>
+								<f:ajax execute="btnLimpar" render="@form" ></f:ajax>	
+							</h:commandLink>
+							
+							<p:commandLink ajax="false" update="@all" title="Cadastrar"
+								style="margin-left:30px;" action="#{pessoaManager.cadastro}" actionListener="#{pessoaManager.registrarLog}" >
+								<h:graphicImage width="50"
+								value="/resources/imagem/img-cadastro.png"></h:graphicImage>
+							</p:commandLink>
+							
+						</b:column>
+					
+						
+					</h:panelGrid>
+				</h:form>
+			</div>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

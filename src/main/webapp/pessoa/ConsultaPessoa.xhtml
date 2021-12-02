@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Consulta</title>
+</h:head>
+<h:body>
+
+	<ui:composition template="/layout/Cadastro.xhtml">
+		<ui:define name="titulo">
+			<h1 align="center">Consulta de Pessoas (10 recentes)</h1>
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<div id="tabelaPessoa" align="center" style="margin-top: 10px;">
+
+				<h:form id="btnConsultaPessoa">
+					<b:commandLink ajax="false" style="margin-bottom : 10px;"
+						title="Cadastro de Pessoa"
+						action="#{navegacaoManager.cadastroPessoa}">
+						<h:graphicImage width="50"
+							value="/resources/imagem/img-cadastro.png"></h:graphicImage>
+					</b:commandLink>
+				</h:form>
+
+				<h:form id="frmDataTablePessoa">
+
+					<p:messages id="msg" />
+
+					<b:dataTable value="#{pessoaManager.pessoas}" var="pessoa" style="margin-top:20px;"  >
+						<b:dataTableColumn value="#{pessoa.id}" />
+						<b:dataTableColumn value="#{pessoa.nome}" />
+						<b:dataTableColumn value="#{pessoa.sobrenome}" />
+						<b:dataTableColumn value="#{pessoa.dataNascimento}" label="Data de nascimento" />
+						<b:dataTableColumn value="#{pessoa.nomeCompleto}" label="Nome completo" />
+						<b:dataTableColumn value="#{pessoa.login}" label="Login" />
+						<b:dataTableColumn label="Foto" >
+							<h:commandLink title="Download" update="@form" actionListener="#{pessoaManager.downloadImage}" >
+								<h:graphicImage width="80" height="80" value="/PessoaImagem?idPessoa=#{pessoa.id}" />
+								<f:param name="downloadArquivo"  value="#{pessoa.id}" />
+							</h:commandLink>
+						</b:dataTableColumn>
+						<b:dataTableColumn label="Editar" >
+							<h:commandLink action="Pessoa" title="Atualizar" ajax="false"
+								update="@all">
+								<h:graphicImage width="50"
+									value="/resources/imagem/imagem-update.png"></h:graphicImage>
+								<f:param name="codigoPessoa" value="#{pessoa.id}"></f:param>
+							</h:commandLink>
+						</b:dataTableColumn>
+						<b:dataTableColumn label="Deletar" >
+							<b:commandLink title="Deletar"
+								action="#{pessoaManager.deletar}" style="margin-left:20px;"
+								update="@form">
+								<h:graphicImage width="50"
+									value="/resources/imagem/imagem-deletar.png"></h:graphicImage>
+								<f:setPropertyActionListener value="#{pessoa}"
+									target="#{pessoaManager.pessoaSelecionado}" />
+							</b:commandLink>
+						</b:dataTableColumn>
+					</b:dataTable>
+				</h:form>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</h:body>
+</html>
